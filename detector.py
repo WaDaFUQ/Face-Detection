@@ -11,14 +11,15 @@ id=0
 font = CV.FONT_HERSHEY_SIMPLEX #文字字型
 color = (255, 255, 255) #文字顏色
 stroke = 2 
-end=1
+run=1
 
-while(end==1):
-    if CV.waitKey(1) & 0xFF == ord('q'):
-        break
+    
+
+while(run):
     ret, frame = Webcam.read()
     gray = CV.cvtColor(frame, CV.COLOR_BGR2GRAY) 
     faces = face_casecade.detectMultiScale(gray, 1.3, 5)
+    
     for(x, y, w, h) in faces:
         CV.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
         id, conf = recognizer.predict(gray[y:y+h, x:x+w])
@@ -41,12 +42,14 @@ while(end==1):
             else:
                 result = "unknown"
 
-        CV.putText(frame, str(result), (x,y+h), font, 1, color, stroke, )
-        if CV.waitKey(1) & 0xFF == ord('q'):
-            end = end - 1
-            break
-            
-    CV.imshow('Face', frame)
+        CV.putText(frame, str(result), (x,y+h), font, 1, color, stroke)
+        CV.imshow('Face', frame)
 
-Webcam.release()
-#cv.destroyAllWindows()
+        if CV.waitKey(20) & 0xFF == ord('q'):
+            Webcam.release()
+            CV.destroyAllWindows()
+            run = 0
+            break
+    
+
+print("Terminate!")
